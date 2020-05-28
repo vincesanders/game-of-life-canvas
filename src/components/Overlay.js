@@ -3,75 +3,77 @@ class Overlay extends React.Component {
     constructor(props) {
         super(props)
         this.olCtx = null;
-        this.drawOverlay = this.drawOverlay.bind(this)
+        this.drawOverlay = this.drawOverlay.bind(this);
     }
     
     componentDidMount(){
-        var overlayCanvas = document.getElementById('canvas-overlay')
+        const overlayCanvas = document.getElementById('canvas-overlay');
 
         // set background
-        var overlayCtx = overlayCanvas.getContext('2d')
-        this.olCtx = overlayCtx
+        const overlayCtx = overlayCanvas.getContext('2d');
+        this.olCtx = overlayCtx;
 
-        var _this = this 
+        const that = this;
 
-        overlayCanvas.addEventListener('click', function(e){
-            if (_this.props.gridIsOn) { return }
-            var ex = e.clientX - overlayCanvas.offsetLeft
-            var ey = e.clientY - overlayCanvas.offsetTop
+        overlayCanvas.addEventListener('click', e => {
+            if (that.props.gridIsOn) {
+                return;
+            }
+            const ex = e.clientX - overlayCanvas.offsetLeft;
+            const ey = e.clientY - overlayCanvas.offsetTop;
             
-            var cellX = Math.floor(ex / _this.props.cellSize)
-            var cellY = Math.floor(ey / _this.props.cellSize)
+            const cellX = Math.floor(ex / that.props.cellSize);
+            const cellY = Math.floor(ey / that.props.cellSize);
     
-            var gridIndex = cellY * _this.props.cols + cellX
-            _this.props.onCellClickEvent(gridIndex)
+            const gridIndex = cellY * that.props.cols + cellX;
+            that.props.onCellClickEvent(gridIndex);
         })
-        this.drawOverlay()
+        this.drawOverlay();
     }
     
     shouldComponentUpdate(nextProps) {
         return true
-        return nextProps.largeGrid != this.props.largeGrid
+        // return nextProps.largeGrid != this.props.largeGrid
     }
     
     componentDidUpdate(){
-        this.olCtx.clearRect(0,0,this.props.cols * this.props.cellSize, this.props.rows * this.props.cellSize)
-        this.drawOverlay()
+        this.olCtx.clearRect(0,0,this.props.cols * this.props.cellSize, this.props.rows * this.props.cellSize);
+        this.drawOverlay();
     }
 
     drawOverlay() {
         // draws the grid
-        var cols = this.props.cols
-        var rows = this.props.rows
-        var cellSize = this.props.cellSize
-        var ctx = this.olCtx
-        var lineCol = '#111112'
+        const cols = this.props.cols;
+        const rows = this.props.rows;
+        const cellSize = this.props.cellSize;
+        const ctx = this.olCtx;
+        const lineCol = '#111112';
         
         for (let i = 0; i <= cols; i++) {
-            ctx.beginPath()
-            ctx.moveTo((i * cellSize) , 0)
-            ctx.lineTo((i * cellSize) , rows * cellSize)
-            ctx.closePath()
-            ctx.strokeStyle = lineCol
-            ctx.stroke()
+            ctx.beginPath();
+            ctx.moveTo((i * cellSize) , 0);
+            ctx.lineTo((i * cellSize) , rows * cellSize);
+            ctx.closePath();
+            ctx.strokeStyle = lineCol;
+            ctx.stroke();
         }
 
         for (let i = 0; i <= rows; i++) {
-            ctx.beginPath()
-            ctx.moveTo(0, (i * cellSize) )
-            ctx.lineTo(cols * cellSize, (i * cellSize) )
-            ctx.closePath()
-            ctx.strokeStyle = lineCol
-            ctx.stroke()
+            ctx.beginPath();
+            ctx.moveTo(0, (i * cellSize) );
+            ctx.lineTo(cols * cellSize, (i * cellSize) );
+            ctx.closePath();
+            ctx.strokeStyle = lineCol;
+            ctx.stroke();
         }    
     }
     
     render() {
-        var size = this.props.cellSize
-        var width = this.props.cols * size
-        var height = this.props.rows * size
+        const size = this.props.cellSize;
+        const width = this.props.cols * size;
+        const height = this.props.rows * size;
         return( 
-            <canvas id="canvas-overlay" width={width} height={height} />       
+            <canvas id="canvas-overlay" width={width} height={height} />    
         )
     }
 }
