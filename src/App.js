@@ -2,6 +2,7 @@ import React from 'react';
 import CanvasBoard from './components/CanvasBoard';
 import Controls from './components/Controls';
 import createGrid from './utils/createGrid';
+import { glider, hanabi, sixShipPushalong } from './utils/patterns';
 
 class App extends React.Component {
   constructor(props) {
@@ -23,8 +24,8 @@ class App extends React.Component {
     this.handleToggleOnOff = this.handleToggleOnOff.bind(this);
     this.handleClearBoard = this.handleClearBoard.bind(this);
     this.handleNewBoard = this.handleNewBoard.bind(this);
-    this.handleSerialize = this.handleSerialize.bind(this);
-    this.handleDeserialize = this.handleDeserialize.bind(this);
+    this.handleEncodeSeed = this.handleEncodeSeed.bind(this);
+    this.decodeSeed = this.decodeSeed.bind(this);
     this.handleToggleSize = this.handleToggleSize.bind(this);
     this.handleCellClickEvent = this.handleCellClickEvent.bind(this);
     this.generateTurn = this.generateTurn.bind(this);
@@ -105,7 +106,7 @@ class App extends React.Component {
     });
   }
   
-  handleSerialize() {
+  handleEncodeSeed() {
     const base64 = this.props.data.base64;
     const gridStr = this.state.grid.join('');
     const gridChunks = gridStr.match(/[01]{1,6}/g) || [];
@@ -124,7 +125,7 @@ class App extends React.Component {
     })
 
     // compression of empty cells
-    let serialized = ''
+    let encoded = ''
     let current = ''
     let accumulator = 0
     mapped.forEach((d, i, arr ) => {
@@ -133,9 +134,9 @@ class App extends React.Component {
       }
       if (d != current || i == arr.length - 1) {
         if (accumulator > 0 && accumulator <=3 ) {
-          serialized += current.repeat(accumulator)
+          encoded += current.repeat(accumulator)
         } else if (accumulator > 3) {
-          serialized += current + '{' + accumulator + '}'
+          encoded += current + '{' + accumulator + '}'
         }
         current = d
         accumulator = 1
@@ -144,68 +145,102 @@ class App extends React.Component {
       }
     })
     // output to localStorage
-    window.localStorage.setItem("rs-gol", serialized)
-    console.log('serialized', serialized)
+    window.localStorage.setItem("rs-gol", encoded)
+    console.log('encoded', encoded)
   }
-  
-  handleDeserialize (useDefault) {
-    const base64 = this.props.data.base64;
-    let file;
-    if (!useDefault) { 
-      file = window.localStorage.getItem("rs-gol");
-    } else { 
-      file  =  this.props.data.testFile;
-    }
-    let expanded = '';
-    let last = '';
-    file.split(/[\{\}]/)
-        .map(d => /^\d+$/.test(d) ? parseInt(d) : d)
-        .forEach(d => {
-            if (typeof d == 'string') {
-              last = d.charAt(d.length - 1);
-              expanded += d;
-            } else if (typeof d == 'number') {
-              expanded += last.repeat(d - 1);
-            }
-        });
-    // de base64
-    const gridFile = expanded.split('').map(d => {
-      let val = base64.indexOf(d);
-      const bin = [];
-      const pows = [32, 16, 8, 4, 2, 1];
-      pows.forEach(pow => {
-        if (val >= pow) {
-          bin.push(1);
-          val -= pow;
-        } else {
-          bin.push(0);
-        }
-      });
-      return bin.reverse();
-    }).reduce((a, b) => a.concat(b));
 
-    let cols, rows, largeGrid, cellSize;
-    
-    if (gridFile.length == 12600) {
-      cellSize = this.props.data.cellSize;
-      cols = this.props.data.cols;
-      rows = this.props.data.rows;
-      largeGrid = false;
-    } else {
-      cellSize = this.props.data.cellSize / 2;
-      cols = this.props.data.cols * 2;
-      rows = this.props.data.rows * 2;
-      largeGrid = true;  
+  //convert rle string to grid
+  decodeSeed (useDefault) {
+    const rleSeed = sixShipPushalong;
+    //create an empty grid
+    const newGrid = this.state.grid.map(cell => 0);
+    let firstIndex = 0;
+    let rleStrIndex = 0;
+    let repeats = '';
+    // //bob$2bo$3o!
+    let i;
+    for (let k = 0; k < rleSeed.size.y; k++) {
+      //jump to next row
+      firstIndex = k * this.state.cols + this.state.cols / 2 - Math.floor(rleSeed.size.x / 2);
+      console.log('firstIndes: ', firstIndex);
+      i = 0;
+      //while loop is broken by $ in seed string
+      while (true) { //row by row
+        console.log('k: ', k);
+        console.log('i: ', i);
+        console.log('letter at current for loop: ', rleSeed.seed[rleStrIndex]);
+        if (rleSeed.seed[rleStrIndex] === 'b') {
+          // newGrid[firstIndex + i] = 0;
+          newGrid[firstIndex] = 0;
+          firstIndex++;
+        } else if (rleSeed.seed[rleStrIndex] === 'o') {
+          // newGrid[firstIndex + i] = 1;
+          newGrid[firstIndex] = 1;
+          firstIndex++;
+        } else if (!isNaN(rleSeed.seed[rleStrIndex])) { //if it's a number
+          let next = rleSeed.seed[rleStrIndex]; //2
+          console.log('next, should be 2: ', next);
+          repeats = '';
+          let currentIndex = 0
+          while (!isNaN(next)) {
+            repeats += next; //repeats is a string at this point
+            currentIndex++
+            next = rleSeed.seed[rleStrIndex + currentIndex];
+          }
+          //make repeats a number
+          repeats = parseInt(repeats); //2
+          console.log('repeats, should be 2: ', repeats);
+          if (rleSeed.seed[rleStrIndex + currentIndex] === 'b') {
+            for (let j = 0; j < repeats; j++) {
+              // newGrid[firstIndex + i + j] = 0;
+              newGrid[firstIndex] = 0;
+              firstIndex++
+            }
+            i += repeats - 2;
+            repeats = '';
+            rleStrIndex++;
+          } else if (rleSeed.seed[rleStrIndex + currentIndex] === 'o') {
+            for (let j = 0; j < repeats; j++) {
+              // newGrid[firstIndex + i + j] = 1;
+              newGrid[firstIndex] = 1;
+              firstIndex++
+            }
+            i += repeats - 2;
+            repeats = '';
+            rleStrIndex++;
+          } else if (rleSeed.seed[rleStrIndex + currentIndex] === '$') {
+            for (let j = 0; j < repeats - 1; j++) { //after a break 1 line will automatically be added
+              //jump to new line for every repeat
+              k++;
+            }
+          }
+          // letter  digits of number
+          i += currentIndex; //we checked more than current character
+          console.log('i after number: ', i)
+          rleStrIndex += currentIndex - 1;
+        } else if (rleSeed.seed[rleStrIndex] === '$') { //end of a line
+          rleStrIndex++;
+          break;
+        } else if (rleSeed.seed[rleStrIndex] === '!') { //if it's $ or !, do nothing
+          break;
+        }
+        rleStrIndex++;
+        console.log('rleStrIndex: ', rleStrIndex);
+        i++;
+      }
+      if (rleSeed.seed[rleStrIndex] === '!') {
+        break;
+      }
     }
-    const _this = this;
+    const that = this;
     this.setState({
-      cellSize,
-      largeGrid,
-      cols,
-      rows,
+      // cellSize,
+      // largeGrid,
+      // cols,
+      // rows,
     }, () => {
-      _this.setState({
-      grid: gridFile,
+      that.setState({
+      grid: newGrid,
       generation: 0,
       gridIsOn: false,
       changeBuffer: [],        
@@ -345,8 +380,8 @@ class App extends React.Component {
           onNewBoard={this.handleNewBoard}
           gridIsOn={this.state.gridIsOn}
           largeGrid={this.state.largeGrid}
-          onSerialize={this.handleSerialize}
-          onDeserialize={this.handleDeserialize}
+          onEncodeSeed={this.handleEncodeSeed}
+          onDecodeSeed={this.decodeSeed}
           onToggleOnOff={this.handleToggleOnOff} 
           onToggleSize={this.handleToggleSize}
           generation={this.state.generation}/>

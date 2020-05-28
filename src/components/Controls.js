@@ -7,9 +7,9 @@ class Controls extends React.Component {
         this.newBoard = this.newBoard.bind(this)
         this.toggleOnOff = this.toggleOnOff.bind(this)
         this.toggleSize = this.toggleSize.bind(this)
-        this.serialize = this.serialize.bind(this)
-        // this.deserialize = this.deserialize.bind(this)
-        // this.sample = this.sample.bind(this)
+        this.encodeSeed = this.encodeSeed.bind(this)
+        this.decodeSeed = this.decodeSeed.bind(this)
+        this.sample = this.sample.bind(this)
     }
     
     clearBoard () {
@@ -22,20 +22,20 @@ class Controls extends React.Component {
         this.props.onNewBoard()
     }
     
-    serialize () {
+    encodeSeed () {
         if(this.props.gridIsOn) { return }
-        this.props.onSerialize()
+        this.props.onEncodeSeed()
     }
     
-    // sample () {
-    //     if(this.props.gridIsOn) { return }
-    //     this.props.onDeserialize(true)
-    // }
+    sample () {
+        if(this.props.gridIsOn) { return }
+        this.props.onDecodeSeed(true)
+    }
     
-    // deserialize () {
-    //     if(this.props.gridIsOn) { return }
-    //     this.props.onDeserialize(false)
-    // }
+    decodeSeed () {
+        if(this.props.gridIsOn) { return }
+        this.props.onDecodeSeed(false)
+    }
     
     toggleOnOff (e) {
         e.preventDefault()
@@ -59,9 +59,9 @@ class Controls extends React.Component {
                     <button className="btn" onClick={this.toggleSize}>
                         {this.props.largeGrid ? "Small" : "Large"}  
                     </button>
-                    <button className="btn" onClick={this.serialize}>Save</button>
-                    {/* <button className="btn" onClick={this.deserialize}>Load</button> */}
-                    {/* <button className="btn" onClick={this.sample}>Test</button> */}
+                    <button className="btn" onClick={this.encodeSeed}>Save</button>
+                    <button className="btn" onClick={this.decodeSeed}>Load</button>
+                    <button className="btn" onClick={this.sample}>Test</button>
                 </span>
             )}
             
