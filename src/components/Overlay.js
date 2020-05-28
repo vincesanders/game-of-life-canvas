@@ -1,7 +1,8 @@
+import React from 'react';
 class Overlay extends React.Component {
     constructor(props) {
         super(props)
-        this.olCtx
+        this.olCtx = null;
         this.drawOverlay = this.drawOverlay.bind(this)
     }
     
@@ -14,7 +15,7 @@ class Overlay extends React.Component {
 
         var _this = this 
 
-       overlayCanvas.addEventListener('click', function(e){
+        overlayCanvas.addEventListener('click', function(e){
             if (_this.props.gameIsOn) { return }
             var ex = e.clientX - overlayCanvas.offsetLeft
             var ey = e.clientY - overlayCanvas.offsetTop

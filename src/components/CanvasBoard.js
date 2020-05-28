@@ -1,3 +1,5 @@
+import React from 'react';
+import Overlay from './Overlay';
 class CanvasBoard extends React.Component {
     constructor(props) {
         super(props)

@@ -1,25 +1,7 @@
 import React from 'react';
-
-const data = {
-  cols: 180,
-  rows: 70,
-  speed: 10,
-  cellSize: 8,
-  randomLive: 10,
-  generation: 0,
-  game: [],Overlay,
-  base64 : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+#',
-  testFile: coolie
-}
-// prime the game array
-const game = new Array(data.rows * data.cols).fill(0).map(cell => {
-  if (Math.floor(Math.random() * data.randomLive) == 0) {
-    cell = 1
-  }
-  return cell
-})
-
-data.game = game
+import CanvasBoard from './components/CanvasBoard';
+import Overlay from './components/Overlay';
+import Controls from './components/Controls';
 
 class App extends React.Component {
   constructor(props) {
@@ -274,13 +256,13 @@ class App extends React.Component {
       
       //array generates address of the neighbors of the cell
       var neighbors = [modVert(line + modHoriz(-1)), 
-                       modVert(line + modHoriz(1)) ,
-                       modVert(line - width + modHoriz(0)),
-                       modVert(line + width + modHoriz(0)) ,
-                       modVert(line - width + modHoriz(-1)),
-                       modVert(line + width + modHoriz(-1)), 
-                       modVert(line - width + modHoriz(1)), 
-                       modVert(line + width + modHoriz(1))]  
+                      modVert(line + modHoriz(1)) ,
+                      modVert(line - width + modHoriz(0)),
+                      modVert(line + width + modHoriz(0)) ,
+                      modVert(line - width + modHoriz(-1)),
+                      modVert(line + width + modHoriz(-1)), 
+                      modVert(line - width + modHoriz(1)), 
+                      modVert(line + width + modHoriz(1))]
 
       return neighbors
     }

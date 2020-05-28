@@ -1,0 +1,84 @@
+body {
+    background-color: #030201;
+}
+
+#control-panel {
+    padding: 5px;
+    margin: 5px 180px 5px 180px;
+}
+.btn {
+    border: 2px solid #EB891A;
+    background-color: #030201;
+    border-radius: 5px;
+    width: 70px;
+    margin-left: 50px;
+    text-align: center;
+    font-family: monospace;
+    font-size: 18px;
+    color: #EB891A;
+    text-shadow: 0 0 3px rgba(235, 189, 35, 0.3);
+    box-shadow: 0 0 1px 1px rgba(235, 189, 35, 0.3), inset 0 0 1px 1px rgba(235, 189, 35, 0.3);
+    transition: ease 0.5s;
+}
+
+.btn:hover {
+    color: #030201;
+    background-color: #EB891A;
+    cursor: pointer;
+    transition: ease 0.3s;
+}
+.btn:focus {
+    outline: none
+}
+.btn:active {
+    color: #030201;
+    background-color: rgb(170, 102, 24);
+    cursor: pointer;
+}
+.gen {
+    color: #EB891A;
+    display: inline-block;
+    margin-left: 50px;
+    width: 200px;
+    font-size: 18px;
+    font-family: monospace;
+    text-shadow: 0 0 3px rgba(235, 189, 35, 0.3);
+}
+#title {
+    font-family: monospace;
+    font-size: 18px;
+    text-align: center;
+    color: #EB891A;
+    text-shadow: 0 0 3px rgba(235, 189, 35, 0.3);
+}
+.board-position {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+#canvas-container {
+    margin-top: 1em
+}
+#canvas-board {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    top: 100;
+    background-color: #030201;
+    border: 1px solid #111112;
+    z-index: 25;
+}
+#canvas-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #111112;
+    top: 100;
+    z-index: 99;
+}
