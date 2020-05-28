@@ -33,7 +33,7 @@ class Overlay extends React.Component {
     
     shouldComponentUpdate(nextProps) {
         return true
-        // return nextProps.largeGrid != this.props.largeGrid
+        // return nextProps.largeGrid !== this.props.largeGrid
     }
     
     componentDidUpdate(){

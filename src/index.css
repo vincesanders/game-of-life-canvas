@@ -3,6 +3,13 @@ body {
     background-color: #030201;
 }
 
+#app-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 h1 {
     width: 100%;
     font-family: monospace;
@@ -12,6 +19,9 @@ h1 {
 }
 
 #control-panel {
+    display: flex;
+    justify-content: center;
+    width: 100%;
     padding: 5px;
     margin: 5px 180px 5px 180px;
 }
@@ -30,8 +40,16 @@ h1 {
     transition: ease 0.5s;
 }
 
+#hanabi-btn {
+    width: 82px
+}
+
 #randomize-btn {
     width: 110px;
+}
+
+#mothership-btn {
+    width: 114px;
 }
 
 .btn:hover {
@@ -94,4 +112,18 @@ h1 {
     border: 1px solid #111112;
     top: 100;
     z-index: 99;
+}
+
+#rules {
+    position: absolute;
+    bottom: 0;
+    /* width: 100%; */
+    font-family: monospace;
+    color: #a4e8b1;
+    /* text-align: center; */
+}
+
+#rules h2 {
+    width: 100%;
+    text-align: center;
 }

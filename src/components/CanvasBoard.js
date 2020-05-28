@@ -14,26 +14,32 @@ class CanvasBoard extends React.Component {
         this.drawCells();
     }
     //only update when necessary - OPTIMIZED
-    shouldComponentUpdate(nextProps, nextState){
-        if (nextProps.gridIsOn != this.props.gridIsOn) { return true; }
-        if (nextProps.changeBuffer.length != this.props.changeBuffer.length) { return true; }
-        if (nextProps.changeBuffer && nextProps.changeBuffer.some((c, i) => c != this.props.changeBuffer[i])) { 
+    shouldComponentUpdate(nextProps, nextState) {
+        //moved drawCells here to handle deprecation of componentWillUpdate.
+        if (nextProps.gridIsOn !== this.props.gridIsOn) { 
+            this.drawCells(nextProps);
+            return true; 
+        }
+        if (nextProps.changeBuffer.length !== this.props.changeBuffer.length) { 
+            this.drawCells(nextProps);
+            return true; 
+        }
+        if (nextProps.changeBuffer && nextProps.changeBuffer.some((c, i) => c !== this.props.changeBuffer[i])) {
+            this.drawCells(nextProps); 
             return true;
         }
-        if (nextProps.grid.length && nextProps.grid.every(c => c == 0) ) {
+        if (nextProps.grid.length && nextProps.grid.every(c => c === 0) ) {
+            this.drawCells(nextProps);
             return true;
         }
         if(!nextProps.grid.length && !this.props.grid.length) { 
             return false;
         }
-        if (nextProps.grid.length != this.props.grid.length || nextProps.grid.some((c, i) => this.props.grid[i] != c)) {
+        if (nextProps.grid.length !== this.props.grid.length || nextProps.grid.some((c, i) => this.props.grid[i] !== c)) {
+            this.drawCells(nextProps);
             return true;
         }
         return false;
-    }
-    
-    componentWillUpdate(nextProps) {
-        this.drawCells(nextProps);
     }
     
     drawCells(props=this.props) {

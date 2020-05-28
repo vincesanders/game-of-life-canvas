@@ -1,8 +1,8 @@
 import React from 'react';
 import CanvasBoard from './components/CanvasBoard';
 import Controls from './components/Controls';
+import Rules from './components/Rules';
 import createGrid from './utils/createGrid';
-import { glider, hanabi, sixShipPushalong } from './utils/patterns';
 
 class App extends React.Component {
   constructor(props) {
@@ -54,7 +54,7 @@ class App extends React.Component {
   }
   
   handleToggleOnOff(){
-    if (!this.state.gridIsOn && this.state.grid.some(cell => cell != 0)) { 
+    if (!this.state.gridIsOn && this.state.grid.some(cell => cell !== 0)) { 
       this.setState(
         { gridIsOn: true }, () => {
           this.runGenerations();
@@ -69,7 +69,7 @@ class App extends React.Component {
 
   handleCellClickEvent(index){
     const currentGrid = [...this.state.grid]
-    if (currentGrid[index] == 0) {
+    if (currentGrid[index] === 0) {
       currentGrid[index] = 1
     } else {
       currentGrid[index] = 0
@@ -107,79 +107,34 @@ class App extends React.Component {
   }
   
   handleEncodeSeed() {
-    const base64 = this.props.data.base64;
-    const gridStr = this.state.grid.join('');
-    const gridChunks = gridStr.match(/[01]{1,6}/g) || [];
-    
-    // gameboard divides perfectly by 6 so no need to adjust overflow. if board size changed, this will need to be handled
-    
-    // serialization into base64
-    const mapped = gridChunks.map(c => {
-      let total = 0;
-      for (var i = 0; i < 6; i++) {
-        if (c[i] == '1') {
-          total += Math.pow(2, i)
-        }
-      }
-      return base64[total]
-    })
-
-    // compression of empty cells
-    let encoded = ''
-    let current = ''
-    let accumulator = 0
-    mapped.forEach((d, i, arr ) => {
-      if (i == arr.length - 1 && d == current) {
-        accumulator++
-      }
-      if (d != current || i == arr.length - 1) {
-        if (accumulator > 0 && accumulator <=3 ) {
-          encoded += current.repeat(accumulator)
-        } else if (accumulator > 3) {
-          encoded += current + '{' + accumulator + '}'
-        }
-        current = d
-        accumulator = 1
-      } else {
-        accumulator ++
-      }
-    })
+    let encoded = '';
     // output to localStorage
-    window.localStorage.setItem("rs-gol", encoded)
-    console.log('encoded', encoded)
+    window.localStorage.setItem("rs-gol", encoded);
+    console.log('encoded', encoded);
   }
 
   //convert rle string to grid
-  decodeSeed (useDefault) {
-    const rleSeed = sixShipPushalong;
+  decodeSeed(seedFile) {
+    const rleSeed = seedFile;
     //create an empty grid
     const newGrid = this.state.grid.map(cell => 0);
     let firstIndex = 0;
     let rleStrIndex = 0;
     let repeats = '';
     // //bob$2bo$3o!
-    let i;
     for (let k = 0; k < rleSeed.size.y; k++) {
       //jump to next row
       firstIndex = k * this.state.cols + this.state.cols / 2 - Math.floor(rleSeed.size.x / 2);
-      console.log('firstIndes: ', firstIndex);
-      i = 0;
       //while loop is broken by $ in seed string
       while (true) { //row by row
-        console.log('k: ', k);
-        console.log('i: ', i);
-        console.log('letter at current for loop: ', rleSeed.seed[rleStrIndex]);
         if (rleSeed.seed[rleStrIndex] === 'b') {
-          // newGrid[firstIndex + i] = 0;
           newGrid[firstIndex] = 0;
           firstIndex++;
         } else if (rleSeed.seed[rleStrIndex] === 'o') {
-          // newGrid[firstIndex + i] = 1;
           newGrid[firstIndex] = 1;
           firstIndex++;
         } else if (!isNaN(rleSeed.seed[rleStrIndex])) { //if it's a number
           let next = rleSeed.seed[rleStrIndex]; //2
-          console.log('next, should be 2: ', next);
           repeats = '';
           let currentIndex = 0
           while (!isNaN(next)) {
@@ -189,14 +144,12 @@ class App extends React.Component {
           }
           //make repeats a number
           repeats = parseInt(repeats); //2
-          console.log('repeats, should be 2: ', repeats);
           if (rleSeed.seed[rleStrIndex + currentIndex] === 'b') {
             for (let j = 0; j < repeats; j++) {
               // newGrid[firstIndex + i + j] = 0;
               newGrid[firstIndex] = 0;
               firstIndex++
             }
-            i += repeats - 2;
             repeats = '';
             rleStrIndex++;
           } else if (rleSeed.seed[rleStrIndex + currentIndex] === 'o') {
@@ -205,7 +158,6 @@ class App extends React.Component {
               newGrid[firstIndex] = 1;
               firstIndex++
             }
-            i += repeats - 2;
             repeats = '';
             rleStrIndex++;
           } else if (rleSeed.seed[rleStrIndex + currentIndex] === '$') {
@@ -215,8 +167,6 @@ class App extends React.Component {
             }
           }
           // letter  digits of number
-          i += currentIndex; //we checked more than current character
-          console.log('i after number: ', i)
           rleStrIndex += currentIndex - 1;
         } else if (rleSeed.seed[rleStrIndex] === '$') { //end of a line
           rleStrIndex++;
@@ -225,8 +175,6 @@ class App extends React.Component {
           break;
         }
         rleStrIndex++;
-        console.log('rleStrIndex: ', rleStrIndex);
-        i++;
       }
       if (rleSeed.seed[rleStrIndex] === '!') {
         break;
@@ -251,7 +199,7 @@ class App extends React.Component {
   handleToggleSize() {
     const nextSize = !this.state.largeGrid;
     let cellSize, cols, rows, grid;
-    if (nextSize == true) {
+    if (nextSize === true) {
       cellSize = this.props.data.cellSize / 2;
       cols = this.props.data.cols * 2;
       rows = this.props.data.rows * 2;
@@ -312,7 +260,7 @@ class App extends React.Component {
       // if first generation, the changeBuffer is empty -  so use the unoptimzed algorithm
       this.state.grid.forEach((cell, i) => {
         const liveNeighbors = getNeighbors(i).reduce((sum, n) => sum + this.state.grid[n], 0);
-        if ((cell && liveNeighbors == 3) || (cell + liveNeighbors == 3)) {
+        if ((cell && liveNeighbors === 3) || (cell + liveNeighbors === 3)) {
           nextTurn[i] = 1;
         } else {
           nextTurn[i] = 0;
@@ -332,19 +280,19 @@ class App extends React.Component {
         // go through checkList
         checkList.forEach(cellIndex => {
           // check to see that this index hasn't already been checked
-          if(nextChangeBuffer.indexOf(cellIndex) == -1) {
+          if(nextChangeBuffer.indexOf(cellIndex) === -1) {
             // get cell value from grid at index
             const cell = this.state.grid[cellIndex];
             // sum the neighbors for the cell index
             const liveNeighbors = getNeighbors(cellIndex).reduce((sum, n) => sum + this.state.grid[n], 0);
             // determine living or dead status
-            if (cell + liveNeighbors == 3) {
+            if (cell + liveNeighbors === 3) {
               nextTurn[cellIndex] = 1;
-            } else if (cell + liveNeighbors != 4) {
+            } else if (cell + liveNeighbors !== 4) {
               nextTurn[cellIndex] = 0;
             }
 
-            if (cell == nextTurn[cellIndex]) { 
+            if (cell === nextTurn[cellIndex]) { 
               staticCellCount++;
             } else {
               nextChangeBuffer.push(cellIndex);
@@ -355,7 +303,7 @@ class App extends React.Component {
     }
     
     // stop the generations if the map is all static cells
-    if (staticCellCount == len) {
+    if (staticCellCount === len) {
       this.setState({
         gridIsOn: false
       }, () => {
@@ -373,7 +321,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div id='app-container'>
         <h1>The Game of Life</h1>
         <Controls 
           onClearBoard={this.handleClearBoard}
@@ -394,6 +342,7 @@ class App extends React.Component {
           rows={this.state.rows} 
           cellSize={this.state.cellSize}
           onCellClickEvent={this.handleCellClickEvent} />
+          <Rules />
       </div>
     );
   }

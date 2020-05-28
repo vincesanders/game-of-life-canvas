@@ -1,4 +1,5 @@
 import React from 'react';
+import { hanabi, sixShipPushalong } from '../utils/patterns';
 class Controls extends React.Component {
     constructor (props) {
         super(props)
@@ -32,9 +33,9 @@ class Controls extends React.Component {
         this.props.onDecodeSeed(true)
     }
     
-    decodeSeed () {
+    decodeSeed(seedFile) {
         if(this.props.gridIsOn) { return }
-        this.props.onDecodeSeed(false)
+        this.props.onDecodeSeed(seedFile)
     }
     
     toggleOnOff (e) {
@@ -59,9 +60,10 @@ class Controls extends React.Component {
                     <button className="btn" onClick={this.toggleSize}>
                         {this.props.largeGrid ? "Small" : "Large"}  
                     </button>
-                    <button className="btn" onClick={this.encodeSeed}>Save</button>
-                    <button className="btn" onClick={this.decodeSeed}>Load</button>
-                    <button className="btn" onClick={this.sample}>Test</button>
+                    {/* <button className="btn" onClick={this.encodeSeed}>Save</button> */}
+                    <button className="btn" id='hanabi-btn' onClick={() => this.decodeSeed(hanabi)}>hanabi</button>
+                    <button className="btn" id='mothership-btn' onClick={() => this.decodeSeed(sixShipPushalong)}>Mothership</button>
+                    {/* <button className="btn" onClick={this.sample}>Test</button> */}
                 </span>
             )}
             
