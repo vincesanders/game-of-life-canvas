@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import Overlay from './components/Overlay';
 import './index.css';
+import createGrid from './utils/createGrid';
 
 const data = {
   cols: 180,
@@ -11,18 +12,12 @@ const data = {
   cellSize: 8,
   randomLive: 10,
   generation: 0,
-  game: [],Overlay,
+  grid: [],
+  Overlay,
   base64 : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890+#'
 }
-// prime the game array
-const game = new Array(data.rows * data.cols).fill(0).map(cell => {
-  if (Math.floor(Math.random() * data.randomLive) == 0) {
-    cell = 1
-  }
-  return cell
-})
 
-data.game = game
+data.grid = createGrid(data.rows, data.cols, data.randomLive);
 
 ReactDOM.render(
   <React.StrictMode>

@@ -16,22 +16,22 @@ class Overlay extends React.Component {
         var _this = this 
 
         overlayCanvas.addEventListener('click', function(e){
-            if (_this.props.gameIsOn) { return }
+            if (_this.props.gridIsOn) { return }
             var ex = e.clientX - overlayCanvas.offsetLeft
             var ey = e.clientY - overlayCanvas.offsetTop
             
             var cellX = Math.floor(ex / _this.props.cellSize)
             var cellY = Math.floor(ey / _this.props.cellSize)
     
-            var gameIndex = cellY * _this.props.cols + cellX
-            _this.props.onCellClickEvent(gameIndex)
+            var gridIndex = cellY * _this.props.cols + cellX
+            _this.props.onCellClickEvent(gridIndex)
         })
         this.drawOverlay()
     }
     
     shouldComponentUpdate(nextProps) {
         return true
-        return nextProps.largeGame != this.props.largeGame
+        return nextProps.largeGrid != this.props.largeGrid
     }
     
     componentDidUpdate(){

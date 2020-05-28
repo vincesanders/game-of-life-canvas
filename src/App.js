@@ -1,6 +1,5 @@
 import React from 'react';
 import CanvasBoard from './components/CanvasBoard';
-import Overlay from './components/Overlay';
 import Controls from './components/Controls';
 
 class App extends React.Component {
@@ -10,11 +9,11 @@ class App extends React.Component {
     this.state = {
       randomLive: this.props.data.randomLive,
       restart: false,
-      game: this.props.data.game,
-      changeList: [],
+      grid: this.props.data.grid,
+      changeBuffer: [],
       generation: 0,
-      gameIsOn: false,
-      largeGame: false,
+      gridIsOn: false,
+      largeGrid: false,
       cellSize: this.props.data.cellSize,
       cols: this.props.data.cols,
       rows: this.props.data.rows
@@ -33,87 +32,87 @@ class App extends React.Component {
   }
   
   runGenerations() {
-     // if gameIsOn set up interval loop
-    if (this.state.gameIsOn){
-      window.gameInterval = window.setInterval(runTurn, this.props.data.speed)
+     // if gridIsOn set up interval loop
+    if (this.state.gridIsOn){
+      window.gridInterval = window.setInterval(runTurn, this.props.data.speed)
     }
     // binding value of this to variable
-    var that = this
+    const that = this
     
     function runTurn () {
-          // checks to see if game has been to set to off and shuts down if so
-  
-          if (!that.state.gameIsOn) {window.clearInterval(window.gameInterval); return }
-          
-          // increments generation value
-          var nextGen = that.state.generation + 1
-          that.setState({
-            generation: nextGen
-            }, function() {
-               // calls for next generation of the game
-               this.generateTurn()
-          })
+      // checks to see if grid has been to set to off and shuts down if so
+
+      if (!that.state.gridIsOn) {window.clearInterval(window.gridInterval); return }
+      
+      // increments generation value
+      const nextGen = that.state.generation + 1
+      that.setState({
+        generation: nextGen
+        }, function() {
+          // calls for next generation of the grid
+          this.generateTurn()
+      })
     }
   }
   
   handleToggleOnOff(){
-    if (!this.state.gameIsOn && this.state.game.some(cell => cell != 0)) { 
+    if (!this.state.gridIsOn && this.state.grid.some(cell => cell != 0)) { 
       this.setState(
-        { gameIsOn: true }, function(){
+        { gridIsOn: true }, function(){
           this.runGenerations()
       }) 
     } else { 
       this.setState(
-        { gameIsOn: false }, function(){
-          window.clearInterval(window.gameInterval)
+        { gridIsOn: false }, function(){
+          window.clearInterval(window.gridInterval)
       }) 
     }
   }
 
   handleCellClickEvent(index){
-    var currentGame = this.state.game.slice()
-    if (currentGame[index] == 0) {
-      currentGame[index] = 1
+    var currentGrid = this.state.grid.slice()
+    if (currentGrid[index] == 0) {
+      currentGrid[index] = 1
     } else {
-      currentGame[index] = 0
+      currentGrid[index] = 0
     }
     
     this.setState({
-      game: currentGame,
-      changeList: []
+      grid: currentGrid,
+      changeBuffer: []
     })
   }
   
   handleClearBoard () {
-      var clearBoard = this.state.game.map(cell => cell = 0)
+      var clearBoard = this.state.grid.map(cell => cell = 0)
       this.setState({
-        game: clearBoard,
+        grid: clearBoard,
         generation: 0,
-        gameIsOn: false,
-        changeList: []
+        gridIsOn: false,
+        changeBuffer: []
       })
   }
   
   handleNewBoard() {
-    var randomBoard = this.state.game.map(cell => Math.floor(Math.random() * this.state.randomLive) == 0 ? 1 : 0) 
+    var randomBoard = this.state.grid.map(cell => Math.floor(Math.random() * this.state.randomLive) == 0 ? 1 : 0) 
 
     this.setState({
-      game: randomBoard,
+      grid: randomBoard,
       generation: 0,
-      gameIsOn: false,
-      changeList: []
+      gridIsOn: false,
+      changeBuffer: []
     })
   }
   
   handleSerialize() {
     var base64 = this.props.data.base64
-    var gameStr = this.state.game.join('')
-    var gameChunks = gameStr.match(/[01]{1,6}/g) || []
+    var gridStr = this.state.grid.join('')
+    var gridChunks = gridStr.match(/[01]{1,6}/g) || []
     
     // gameboard divides perfectly by 6 so no need to adjust overflow. if board size changed, this will need to be handled
     
     // serialization into base64
-    var mapped = gameChunks.map(c => {
+    var mapped = gridChunks.map(c => {
       var total = 0;
       for (var i = 0; i < 6; i++) {
         if (c[i] == '1') {
@@ -166,7 +165,7 @@ class App extends React.Component {
             }
         })
     // de base64
-    var gameFile = expanded.split('')
+    var gridFile = expanded.split('')
                           .map(d => {
                             var val = base64.indexOf(d)
                             var bin = []
@@ -183,38 +182,38 @@ class App extends React.Component {
                             return bin.reverse()
                           })
                           .reduce((a, b) => a.concat(b))
-    var cols, rows, largeGame, cellSize
+    var cols, rows, largeGrid, cellSize
     
-    if (gameFile.length == 12600) {
+    if (gridFile.length == 12600) {
       cellSize = this.props.data.cellSize
       cols = this.props.data.cols
       rows = this.props.data.rows
-      largeGame = false
+      largeGrid = false
     } else {
       cellSize = this.props.data.cellSize / 2
       cols = this.props.data.cols * 2
       rows = this.props.data.rows * 2
-      largeGame = true      
+      largeGrid = true      
     }
     var _this = this
     this.setState({
       cellSize,
-      largeGame,
+      largeGrid,
       cols,
       rows,
     }, function() {
       _this.setState({
-      game: gameFile,
+      grid: gridFile,
       generation: 0,
-      gameIsOn: false,
-      changeList: [],        
+      gridIsOn: false,
+      changeBuffer: [],        
       })
     })
   }
   
   handleToggleSize() {
-    var nextSize = !this.state.largeGame
-    var cellSize, cols, rows, game
+    var nextSize = !this.state.largeGrid
+    var cellSize, cols, rows, grid
     if (nextSize == true) {
       cellSize = this.props.data.cellSize / 2
       cols = this.props.data.cols * 2
@@ -224,19 +223,19 @@ class App extends React.Component {
       cols = this.props.data.cols
       rows = this.props.data.rows
     }
-    game = new Array(cols * rows).fill(0)
+    grid = new Array(cols * rows).fill(0)
     this.setState({
-      largeGame: nextSize,
+      largeGrid: nextSize,
       cellSize,
       cols,
       rows,
-      game
+      grid
     },  function(){this.handleNewBoard()})
   }
   
   generateTurn() {
     var that = this
-    var len = that.state.game.length  
+    var len = that.state.grid.length  
         
     function getNeighbors(index) {
     // inner function to get array of neighbor cells
@@ -267,14 +266,14 @@ class App extends React.Component {
       return neighbors
     }
 
-    var nextChangeList = []
-    var nextTurn = this.state.game.slice()
+    var nextChangeBuffer = []
+    var nextTurn = this.state.grid.slice()
     var staticCellCount = 0
 
-    if (!this.state.changeList.length) {
-      // if first generation, the changeList is empty -  so use the unoptimzed algorithm
-      this.state.game.forEach((cell, i) => {
-        var liveNeighbors = getNeighbors(i).reduce((acc, n) => acc + this.state.game[n], 0)
+    if (!this.state.changeBuffer.length) {
+      // if first generation, the changeBuffer is empty -  so use the unoptimzed algorithm
+      this.state.grid.forEach((cell, i) => {
+        var liveNeighbors = getNeighbors(i).reduce((acc, n) => acc + this.state.grid[n], 0)
         if ((cell && liveNeighbors == 3) || (cell + liveNeighbors == 3)) {
           nextTurn[i] = 1
         } else {
@@ -284,22 +283,22 @@ class App extends React.Component {
         if (cell == nextTurn[i]) { 
           staticCellCount++ 
         } else {
-          nextChangeList.push(i)
+          nextChangeBuffer.push(i)
         }
       })
     } else {
-      // if changeList not empty ( eg not first generation )
-      this.state.changeList.forEach(gameIndex => {
+      // if changeBuffer not empty ( eg not first generation )
+      this.state.changeBuffer.forEach(gridIndex => {
         // first get the neighbors and make a new array that includes the index
-        var checkList = [gameIndex].concat(getNeighbors(gameIndex))
+        var checkList = [gridIndex].concat(getNeighbors(gridIndex))
         // go through checkList
         checkList.forEach(cellIndex => {
           // check to see that this index hasn't already been checked
-          if(nextChangeList.indexOf(cellIndex) == -1) {
-            // get cell value from game at index
-            var cell = this.state.game[cellIndex]
+          if(nextChangeBuffer.indexOf(cellIndex) == -1) {
+            // get cell value from grid at index
+            var cell = this.state.grid[cellIndex]
             // sum the neighbors for the cell index
-            var liveNeighbors = getNeighbors(cellIndex).reduce((acc, n) => acc + this.state.game[n], 0)
+            var liveNeighbors = getNeighbors(cellIndex).reduce((acc, n) => acc + this.state.grid[n], 0)
             // determine living or dead status
             if (cell + liveNeighbors == 3) {
               nextTurn[cellIndex] = 1
@@ -310,7 +309,7 @@ class App extends React.Component {
             if (cell == nextTurn[cellIndex]) { 
               staticCellCount++ 
             } else {
-              nextChangeList.push(cellIndex)
+              nextChangeBuffer.push(cellIndex)
             }
           }
         })
@@ -320,17 +319,17 @@ class App extends React.Component {
     // stop the generations if the map is all static cells
     if (staticCellCount == len) {
       this.setState({
-        gameIsOn: false
+        gridIsOn: false
       }, function() {
-        window.clearInterval(window.gameInterval)
+        window.clearInterval(window.gridInterval)
       })
     }
 
-    // optimization using changeList. we only check cells that changed last turn 
+    // optimization using changeBuffer. we only check cells that changed last turn 
     // and the neighbors
     this.setState({
-      game: nextTurn,
-      changeList: nextChangeList
+      grid: nextTurn,
+      changeBuffer: nextChangeBuffer
     })
   }
 
@@ -340,18 +339,18 @@ class App extends React.Component {
         <Controls 
           onClearBoard={this.handleClearBoard}
           onNewBoard={this.handleNewBoard}
-          gameIsOn={this.state.gameIsOn}
-          largeGame={this.state.largeGame}
+          gridIsOn={this.state.gridIsOn}
+          largeGrid={this.state.largeGrid}
           onSerialize={this.handleSerialize}
           onDeserialize={this.handleDeserialize}
           onToggleOnOff={this.handleToggleOnOff} 
           onToggleSize={this.handleToggleSize}
           generation={this.state.generation}/>
         <CanvasBoard 
-          largeGame={this.state.largeGame}
-          changeList = {this.state.changeList}
-          game={this.state.game}
-          gameIsOn={this.state.gameIsOn}
+          largeGrid={this.state.largeGrid}
+          changeBuffer = {this.state.changeBuffer}
+          grid={this.state.grid}
+          gridIsOn={this.state.gridIsOn}
           cols={this.state.cols} 
           rows={this.state.rows} 
           cellSize={this.state.cellSize}

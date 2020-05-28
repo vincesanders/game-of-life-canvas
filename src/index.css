@@ -21,6 +21,10 @@ body {
     transition: ease 0.5s;
 }
 
+#randomize-btn {
+    width: 110px;
+}
+
 .btn:hover {
     color: #030201;
     background-color: #EB891A;

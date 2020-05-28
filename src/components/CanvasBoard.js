@@ -16,23 +16,23 @@ class CanvasBoard extends React.Component {
     
     shouldComponentUpdate(nextProps, nextState){
     
-        if (nextProps.gameIsOn != this.props.gameIsOn) { return true }
-        if (nextProps.changeList.length != this.props.changeList.length) { return true }
-        if (nextProps.changeList && 
-            nextProps.changeList.some((c, i) => c != this.props.changeList[i])) { 
+        if (nextProps.gridIsOn != this.props.gridIsOn) { return true }
+        if (nextProps.changeBuffer.length != this.props.changeBuffer.length) { return true }
+        if (nextProps.changeBuffer && 
+            nextProps.changeBuffer.some((c, i) => c != this.props.changeBuffer[i])) { 
             return true 
         }
-        if (nextProps.game.length &&
-            nextProps.game.every(c => c == 0) ) {
+        if (nextProps.grid.length &&
+            nextProps.grid.every(c => c == 0) ) {
             return true 
         }
-        if(!nextProps.game.length &&
-            !this.props.game.length) { 
+        if(!nextProps.grid.length &&
+            !this.props.grid.length) { 
             return false 
         }
-        if (nextProps.game.length !=
-            this.props.game.length ||
-            nextProps.game.some((c, i) => this.props.game[i] != c)) {
+        if (nextProps.grid.length !=
+            this.props.grid.length ||
+            nextProps.grid.some((c, i) => this.props.grid[i] != c)) {
             return true
         }
         return false
@@ -43,9 +43,9 @@ class CanvasBoard extends React.Component {
     }
     
     drawCells(props=this.props){
-        var game = props.game
-        var changeList = props.changeList
-        if(!game.length) { return }
+        var grid = props.grid
+        var changeBuffer = props.changeBuffer
+        if(!grid.length) { return }
         var liveCell = '#EB891A'
         var deadCell = '#030201'
         var ctx = this.ctx
@@ -60,9 +60,9 @@ class CanvasBoard extends React.Component {
             ctx.fillRect(c, r, size, size) 
         }
         
-        if (!changeList.length){
-            // if reading from .game because first turn
-            game.forEach((cell, i) => {
+        if (!changeBuffer.length){
+            // if reading from .grid because first turn
+            grid.forEach((cell, i) => {
                 if (cell == 1) {
                 fillCell(i, liveCell)
                 } else if (cell == 0){
@@ -70,11 +70,11 @@ class CanvasBoard extends React.Component {
                 }
             })
         } else {
-            // if reading from changelist
-            changeList.forEach(i => {
-            if (game[i] == 1) { 
+            // if reading from changeBuffer
+            changeBuffer.forEach(i => {
+            if (grid[i] == 1) { 
                 fillCell(i, liveCell)
-                } else if (game[i] == 0) { 
+                } else if (grid[i] == 0) { 
                 fillCell(i, deadCell)
                 }
             })
@@ -94,9 +94,9 @@ class CanvasBoard extends React.Component {
                 height={height}>       
             </canvas>
             <Overlay 
-                largeGame={this.props.largeGame}
+                largeGrid={this.props.largeGrid}
                 cellSize={this.props.cellSize}
-                gameIsOn={this.props.gameIsOn}
+                gridIsOn={this.props.gridIsOn}
                 rows={this.props.rows}
                 onCellClickEvent={this.props.onCellClickEvent}
                 cols={this.props.cols}/>
