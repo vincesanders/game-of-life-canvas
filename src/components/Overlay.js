@@ -65,7 +65,7 @@ class Overlay extends React.Component {
         }    
     }
     
-    render(){
+    render() {
         var size = this.props.cellSize
         var width = this.props.cols * size
         var height = this.props.rows * size
@@ -74,3 +74,5 @@ class Overlay extends React.Component {
         )
     }
 }
+
+export default Overlay;
