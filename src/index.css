@@ -1,5 +1,14 @@
+/* #EB891A */
 body {
     background-color: #030201;
+}
+
+h1 {
+    width: 100%;
+    font-family: monospace;
+    color: #a4e8b1;
+    font-size: 48px;
+    text-align: center;
 }
 
 #control-panel {
@@ -7,7 +16,7 @@ body {
     margin: 5px 180px 5px 180px;
 }
 .btn {
-    border: 2px solid #EB891A;
+    border: 2px solid #a4e8b1;
     background-color: #030201;
     border-radius: 5px;
     width: 70px;
@@ -15,9 +24,9 @@ body {
     text-align: center;
     font-family: monospace;
     font-size: 18px;
-    color: #EB891A;
-    text-shadow: 0 0 3px rgba(235, 189, 35, 0.3);
-    box-shadow: 0 0 1px 1px rgba(235, 189, 35, 0.3), inset 0 0 1px 1px rgba(235, 189, 35, 0.3);
+    color: #a4e8b1;
+    text-shadow: 0 0 3px rgba(164, 232, 177, 0.3);
+    box-shadow: 0 0 1px 1px rgba(164, 232, 177, 0.3), inset 0 0 1px 1px rgba(164, 232, 177, 0.3);
     transition: ease 0.5s;
 }
 
@@ -27,7 +36,7 @@ body {
 
 .btn:hover {
     color: #030201;
-    background-color: #EB891A;
+    background-color: #a4e8b1;
     cursor: pointer;
     transition: ease 0.3s;
 }
@@ -36,24 +45,24 @@ body {
 }
 .btn:active {
     color: #030201;
-    background-color: rgb(170, 102, 24);
+    background-color: rgb(36, 143, 55);
     cursor: pointer;
 }
 .gen {
-    color: #EB891A;
+    color: #a4e8b1;
     display: inline-block;
     margin-left: 50px;
     width: 200px;
     font-size: 18px;
     font-family: monospace;
-    text-shadow: 0 0 3px rgba(235, 189, 35, 0.3);
+    text-shadow: 0 0 3px rgba(164, 232, 177, 0.3);
 }
 #title {
     font-family: monospace;
     font-size: 18px;
     text-align: center;
-    color: #EB891A;
-    text-shadow: 0 0 3px rgba(235, 189, 35, 0.3);
+    color: #a4e8b1;
+    text-shadow: 0 0 3px rgba(164, 232, 177, 0.3);
 }
 .board-position {
     position: absolute;

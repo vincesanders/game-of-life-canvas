@@ -91,7 +91,12 @@ class App extends React.Component {
   }
   
   handleNewBoard() {
-    const randomBoard = createGrid(this.state.rows, this.state.cols, this.state.randomLive);
+    let randomBoard;
+    if (this.state.largeGrid) { //to avoid dropped frames, large grids start with less living cells
+      randomBoard = createGrid(this.state.rows, this.state.cols, this.state.randomLive, 1);
+    } else {
+      randomBoard = createGrid(this.state.rows, this.state.cols, this.state.randomLive);
+    }
     this.setState({
       grid: randomBoard,
       generation: 0,
@@ -334,6 +339,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
+        <h1>The Game of Life</h1>
         <Controls 
           onClearBoard={this.handleClearBoard}
           onNewBoard={this.handleNewBoard}

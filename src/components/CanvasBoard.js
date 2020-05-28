@@ -42,8 +42,8 @@ class CanvasBoard extends React.Component {
         if (!grid.length) { 
             return;
         }
-        const liveCell = '#EB891A';
-        const deadCell = '#030201';
+        const liveCell = '#adf5bb';
+        const deadCell = '#2c3a31';
         const ctx = this.ctx;
         const size = this.props.cellSize;
         const that = this;
