@@ -1,0 +1,129 @@
+/* #EB891A */
+body {
+    background-color: #030201;
+    display: flex;
+    justify-content: center;
+    height: 900px;
+    width: 1100px;
+    margin: 0 auto;
+}
+
+#app-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+h1 {
+    width: 100%;
+    font-family: monospace;
+    color: #a4e8b1;
+    font-size: 48px;
+    text-align: center;
+}
+
+#control-panel {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 5px;
+    margin: 5px 180px 5px 180px;
+}
+.btn {
+    border: 2px solid #a4e8b1;
+    background-color: #030201;
+    border-radius: 5px;
+    width: 70px;
+    margin-left: 50px;
+    text-align: center;
+    font-family: monospace;
+    font-size: 18px;
+    color: #a4e8b1;
+    text-shadow: 0 0 3px rgba(164, 232, 177, 0.3);
+    box-shadow: 0 0 1px 1px rgba(164, 232, 177, 0.3), inset 0 0 1px 1px rgba(164, 232, 177, 0.3);
+    transition: ease 0.5s;
+}
+
+#hanabi-btn {
+    width: 82px
+}
+
+#randomize-btn {
+    width: 110px;
+}
+
+#mothership-btn {
+    width: 114px;
+}
+
+.btn:hover {
+    color: #030201;
+    background-color: #a4e8b1;
+    cursor: pointer;
+    transition: ease 0.3s;
+}
+.btn:focus {
+    outline: none
+}
+.btn:active {
+    color: #030201;
+    background-color: rgb(36, 143, 55);
+    cursor: pointer;
+}
+.gen {
+    color: #a4e8b1;
+    display: inline-block;
+    margin-left: 50px;
+    width: 200px;
+    font-size: 18px;
+    font-family: monospace;
+    text-shadow: 0 0 3px rgba(164, 232, 177, 0.3);
+}
+#title {
+    font-family: monospace;
+    font-size: 18px;
+    text-align: center;
+    color: #a4e8b1;
+    text-shadow: 0 0 3px rgba(164, 232, 177, 0.3);
+}
+.board-position {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+#canvas-container {
+    margin-top: 1em
+}
+#canvas-board {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100;
+    margin: 0 auto;
+    background-color: #030201;
+    border: 1px solid #111112;
+    z-index: 25;
+}
+#canvas-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100;
+    margin: 0 auto;
+    border: 1px solid #111112;
+    z-index: 99;
+}
+
+#rules {
+    margin-top: 600px;
+    font-family: monospace;
+    color: #a4e8b1;
+}
+
+#rules h2 {
+    width: 100%;
+    text-align: center;
+}
