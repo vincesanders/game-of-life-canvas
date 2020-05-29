@@ -1,12 +1,17 @@
 /* #EB891A */
 body {
     background-color: #030201;
+    display: flex;
+    justify-content: center;
+    height: 900px;
+    width: 1100px;
+    margin: 0 auto;
 }
 
 #app-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -96,9 +101,8 @@ h1 {
     position: absolute;
     left: 0;
     right: 0;
-    margin-left: auto;
-    margin-right: auto;
     top: 100;
+    margin: 0 auto;
     background-color: #030201;
     border: 1px solid #111112;
     z-index: 25;
@@ -107,20 +111,16 @@ h1 {
     position: absolute;
     left: 0;
     right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid #111112;
     top: 100;
+    margin: 0 auto;
+    border: 1px solid #111112;
     z-index: 99;
 }
 
 #rules {
-    position: absolute;
-    bottom: 0;
-    /* width: 100%; */
+    margin-top: 600px;
     font-family: monospace;
     color: #a4e8b1;
-    /* text-align: center; */
 }
 
 #rules h2 {

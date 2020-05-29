@@ -72,8 +72,11 @@ class Overlay extends React.Component {
         const size = this.props.cellSize;
         const width = this.props.cols * size;
         const height = this.props.rows * size;
+        const margins = {
+            color: 'red'
+        }
         return( 
-            <canvas id="canvas-overlay" width={width} height={height} />    
+            <canvas id="canvas-overlay" width={width} height={height} style={margins} />    
         )
     }
 }

@@ -1,5 +1,17 @@
 # game-of-life-canvas
-An attempt to use canvas with React to get a better performing Game of Life.
+An attempt to use the Canvas API with React to get a better performing Game of Life.
+
+The project also includes functionality to convert RLE (run length encoded) files to pattern objects that can be used by the application.
+
+### TODO
+
+Add encoding functionality so a user can save their current configuration and load it later using the RLE format.
+
+Add more paterns.
+
+Add functionality to adjust the speed of the game.
+
+Add functionality to step forward and backward through generations one at a time.
 
 ## Available Scripts
 
