@@ -109,7 +109,7 @@ class App extends React.Component {
   handleEncodeSeed() {
     let encoded = '';
     // output to localStorage
-    window.localStorage.setItem("rs-gol", encoded);
+    window.localStorage.setItem("user-seed", encoded);
     console.log('encoded', encoded);
   }
 
@@ -118,8 +118,8 @@ class App extends React.Component {
     const rleSeed = seedFile;
     //create an empty grid
     const newGrid = this.state.grid.map(cell => 0);
-    let firstIndex = 0;
-    let rleStrIndex = 0;
+    let firstIndex = 0; //points to insertion point of the grid
+    let rleStrIndex = 0; //point to read position of seed string
     let repeats = '';
     // //bob$2bo$3o!
     for (let k = 0; k < rleSeed.size.y; k++) {
@@ -146,7 +146,6 @@ class App extends React.Component {
           repeats = parseInt(repeats); //2
           if (rleSeed.seed[rleStrIndex + currentIndex] === 'b') {
             for (let j = 0; j < repeats; j++) {
-              // newGrid[firstIndex + i + j] = 0;
               newGrid[firstIndex] = 0;
               firstIndex++
             }
@@ -154,7 +153,6 @@ class App extends React.Component {
             rleStrIndex++;
           } else if (rleSeed.seed[rleStrIndex + currentIndex] === 'o') {
             for (let j = 0; j < repeats; j++) {
-              // newGrid[firstIndex + i + j] = 1;
               newGrid[firstIndex] = 1;
               firstIndex++
             }
@@ -166,13 +164,12 @@ class App extends React.Component {
               k++;
             }
           }
-          // letter  digits of number
           rleStrIndex += currentIndex - 1;
         } else if (rleSeed.seed[rleStrIndex] === '$') { //end of a line
           rleStrIndex++;
           break;
-        } else if (rleSeed.seed[rleStrIndex] === '!') { //if it's $ or !, do nothing
-          break;
+        } else if (rleSeed.seed[rleStrIndex] === '!') { //end of file
+          break; //skip increment of rleStrIndex
         }
         rleStrIndex++;
       }
@@ -181,7 +178,7 @@ class App extends React.Component {
       }
     }
     const that = this;
-    this.setState({
+    this.setState({ //future funtionality - adjust size of canvas based on seed
       // cellSize,
       // largeGrid,
       // cols,
