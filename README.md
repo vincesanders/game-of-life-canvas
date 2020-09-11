@@ -3,6 +3,8 @@ An attempt to use the Canvas API with React to get a better performing Game of L
 
 The project also includes functionality to convert RLE (run length encoded) files to pattern objects that can be used by the application.
 
+Deployment: https://game-of-life-canvas.now.sh/
+
 ### TODO
 
 Add encoding functionality so a user can save their current configuration and load it later using the RLE format.
